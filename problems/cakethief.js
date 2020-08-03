@@ -2,35 +2,22 @@
 // have a monetary type and value and write 
 // a function maxDuffelBagValue() that takes an array of cake type objects and a weight capacity, and returns the maximum monetary value the duffel bag can hold.
 
-const insertionSort = (array, cakeRatio, cakeWeight, cakeValue ) => {
-  let firstIndex = 0,
-    lastIndex = array.length - 1,
-    middleIndex = Math.floor((lastIndex + firstIndex) / 2),
-    middleIndexObject = array[middleIndex],
-    middleIndexRatio = middleIndexObject.ratio,
-    newCakeObject = {ratio: cakeRatio, weight: cakeWeight, value: cakeValue}
-  console.log('The object in the middle index is', middleIndexObject , 'and the ratio is', middleIndexRatio);
-  console.log('Cake ratio is', cakeRatio);
-  if(array[middleIndex + 1] === undefined) {
-    return array.splice(middleIndex, 0, newCakeObject)
-  }
+// INSERT SORT HIGHEST - LOWEST
+const insertionSort = (arr, val) => {
+  //set first and last index point 
 
-  let nextObject = array[middleIndex + 1],
-    nextObjectRatio = nextObject.ratio
+  //find midpoint to compare value to
 
-  console.log('The object next to the middle index is', nextObject, 'and the ratio is', nextObjectRatio);
+  //while the value does not match
 
-  //this currently creates an infinite loop don't run yet 
-  while((parseInt(middleIndexRatio) > parseInt(cakeRatio) || parseInt(nextObjectRatio) < parseInt(cakeRatio) && firstIndex < lastIndex)) {
-    if (cakeRatio < nextObjectRatio) {
-      lastIndex = middleIndex - 1;
-    } else if (cakeRatio > middleIndexRatio) {
-      firstIndex = middleIndex + 1;
-    }
-    middleIndex = Math.floor((lastIndex + firstIndex)/2)
-  }
+    //if the value < midpoint
+      //set first to midpoint
+    //if the value > midpoint
+      //set last to midpoint
 
-  return array.splice(middleIndex, 0, newCakeObject)
+    //set new midpoint
+
+  //insert value into correct point within sorted array
 }
 
 
@@ -48,7 +35,7 @@ const maxDuffelBagValue = (cakeTypes, capacity) => {
     }
 
     if(cakearraywithratios.length === 0 ) {
-      cakearraywithratios.push({ ratio: `${ratio}`, weight: `${cake.weight}`, value: `${cake.value}` })
+      cakearraywithratios.push({ ratio: ratio, weight: cake.weight, value: cake.value })
     } else {
       insertionSort(cakearraywithratios, ratio, cake.weight, cake.value);
       console.log('The new array is', cakearraywithratios);
@@ -56,8 +43,8 @@ const maxDuffelBagValue = (cakeTypes, capacity) => {
 
   })
 
-  let numberOfTopCakes = capacity / hash[highestValueForWeight].weight;
-  let valueofTopCakes = numberOfTopCakes * hash[highestValueForWeight].value;
+  let numberOfTopCakes = capacity / cakearraywithratios[highestValueForWeight].weight;
+  let valueofTopCakes = numberOfTopCakes * cakearraywithratios[highestValueForWeight].value;
   
   if (capacity - numberOfTopCakes === 0 ) {
     return valueofTopCakes;
@@ -75,6 +62,6 @@ const cakeTypes = [
 
 const capacity = 20;
 
-maxDuffelBagValue(cakeTypes, capacity);
+//maxDuffelBagValue(cakeTypes, capacity);
 
 module.exports = maxDuffelBagValue;
