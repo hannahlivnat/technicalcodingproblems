@@ -12,10 +12,10 @@ const { performance } = require('perf_hooks');
 //O(NQ) performance time
 function matchingStrings(strings, queries) {
   const results = new Array(queries.length).fill(0);
-  for (let string of strings) {
-    for (let i = 0; i < queries.length; i++) {
-      if (string === queries[i]) {
-        results.splice(i, 1, results[i] + 1)
+  for (let i = 0; i < strings.length; i++) {
+    for (let j = 0; j < queries.length; j++) {
+      if (strings[i] === queries[j]) {
+        results.splice(j, 1, results[j] + 1)
       }
     }
   }
@@ -24,8 +24,8 @@ function matchingStrings(strings, queries) {
 }
 
 const t0 = performance.now();
-matchingStrings(['def', 'de', 'fgh'], ['de', 'lmn', 'fgh']);
-//matchingStrings(['def', 'de', 'fgh', 'aba', 'bb', 'tig', 'app', 'ghe', 'igh', 'ii'], ['de', 'lmn', 'fgh', 'ii', 'bbb', 'ba', 'tig', 'pa', 'pap']);
+//matchingStrings(['def', 'de', 'fgh'], ['de', 'lmn', 'fgh']);
+matchingStrings(['def', 'de', 'fgh', 'aba', 'bb', 'tig', 'app', 'ghe', 'igh', 'ii'], ['de', 'lmn', 'fgh', 'ii', 'bbb', 'ba', 'tig', 'pa', 'pap']);
 const t1 = performance.now();
 console.log(`Time to run was ${ t1 - t0 } milliseconds`);
 
@@ -49,11 +49,11 @@ const fasterMatchingStrings = (strings, queries) => {
   return Object.values(results);
 }
 
-const t2 = performance.now();
-fasterMatchingStrings(['def', 'de', 'fgh'], ['de', 'lmn', 'fgh']);
+//const t2 = performance.now();
+//fasterMatchingStrings(['def', 'de', 'fgh'], ['de', 'lmn', 'fgh']);
 //fasterMatchingStrings(['def', 'de', 'fgh', 'aba', 'bb', 'tig', 'app', 'ghe', 'igh', 'ii'], ['de', 'lmn', 'fgh', 'ii', 'bbb', 'ba', 'tig', 'pa', 'pap']);
-const t3 = performance.now();
-console.log(`Time to run was ${t3 - t2} milliseconds`);
+//const t3 = performance.now();
+//console.log(`Time to run was ${t3 - t2} milliseconds`);
 
 
 //switched to making strings into hashtable and then 
@@ -78,7 +78,7 @@ const fastestMatchingStrings = (strings, queries) => {
 }
 
 const t4 = performance.now();
-fastestMatchingStrings(['def', 'de', 'fgh'], ['de', 'lmn', 'fgh']);
-//fasterMatchingStrings(['def', 'de', 'fgh', 'aba', 'bb', 'tig', 'app', 'ghe', 'igh', 'ii'], ['de', 'lmn', 'fgh', 'ii', 'bbb', 'ba', 'tig', 'pa', 'pap']);
+//fastestMatchingStrings(['def', 'de', 'fgh'], ['de', 'lmn', 'fgh']);
+fastestMatchingStrings(['def', 'de', 'fgh', 'aba', 'bb', 'tig', 'app', 'ghe', 'igh', 'ii'], ['de', 'lmn', 'fgh', 'ii', 'bbb', 'ba', 'tig', 'pa', 'pap']);
 const t5 = performance.now();
 console.log(`Time to run was ${t5 - t4} milliseconds`);

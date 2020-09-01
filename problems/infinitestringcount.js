@@ -38,12 +38,12 @@ const fastRepeatedString = (s, n) => {
 
 
 const t0 = performance.now();
-slowrepeatedString('aba', 100);
+slowrepeatedString('aba', 1000);
 const t1 = performance.now();
 console.log(`Slow version took ${t1 - t0} milliseconds`);
 
 const t2 = performance.now();
-fastRepeatedString('aba', 100);
+fastRepeatedString('aba', 1000);
 const t3 = performance.now();
 
 console.log(`Fast version took ${t3 - t2} milliseconds`);
