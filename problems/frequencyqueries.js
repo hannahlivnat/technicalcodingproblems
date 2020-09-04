@@ -47,7 +47,7 @@ function freqQuery(queries) {
 //Second Attempt : Used for..in loop instead of Object.value()
 //Failed one test case for timing out
 
-function freqQuery(queries) {
+function freqQueryTwo(queries) {
   const arrFreq = {};
   const results = [];
 
@@ -88,3 +88,94 @@ function freqQuery(queries) {
   return results;
 
 }
+
+//Third Attempt : Used additional array to track frequency 
+function freqQueryThree(queries) {
+  const queryResultTracker = {};
+  const freqArr = [];
+  const results = [];
+
+  for (let query of queries) {
+    let instruction = query[0];
+    let value = query[1];
+
+    console.log(instruction, value);
+
+    //check if value is in query tracker already
+    let tracker = ((value in queryResultTracker) ? parseInt(queryResultTracker[value]) : 0);
+    console.log(queryResultTracker);
+    console.log(tracker);
+
+    if (instruction === 1) { //insert
+
+      //update key:value pair in query results
+      queryResultTracker[value] = tracker + 1;
+
+      //update count for freq. array
+      freqArr[(tracker + 1)] = freqArr[(tracker + 1)] + 1 || 1;
+      if (tracker != 0) {
+        freqArr[tracker]--;
+      }
+
+    } else if (instruction === 2) { //delete
+
+      //update key:value pair in query results
+      //update count for freq. array
+      if(tracker != 0) {
+        queryResultTracker[value]--;
+        freqArr[tracker] --;
+        freqArr[tracker - 1]++;
+      }
+
+    } else { //lookup
+      console.log(freqArr);
+      results.push(((freqArr[value] > 0) ? 1 : 0));
+    }
+
+  }
+
+  return results;
+
+}
+
+//console.log(freqQueryThree([[1,1],[2,2],[3,2],[1,1],[1,1],[2,1],[3,2]]));
+
+//Fourth Attempt
+function freqQueryFour(queries) {
+  const queryResultTracker = {};
+  const freqArr = new Array(queries.length).fill(0)
+  const results = [];
+
+  for (let query of queries) {
+    let instruction = query[0];
+    let value = query[1];
+    let tracker = queryResultTracker[value] | 0;
+
+    if (instruction === 1) { //insert
+
+      queryResultTracker[value] = tracker + 1;
+
+      freqArr[(tracker + 1)]++;
+      if (tracker != 0) {
+        freqArr[tracker]--;
+      }
+
+    } else if (instruction === 2) { //delete
+
+      if (tracker != 0) {
+        queryResultTracker[value]--;
+        freqArr[tracker]--;
+        freqArr[tracker - 1]++;
+      }
+
+    } else { //lookup
+      results.push(((freqArr[value] > 0) ? 1 : 0));
+    }
+
+  }
+
+  return results;
+
+}
+
+console.log(freqQueryFour([[1, 1], [2, 2], [3, 2], [1, 1], [1, 1], [2, 1], [3, 2]]));
