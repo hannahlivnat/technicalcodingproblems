@@ -59,20 +59,37 @@ minimumBribes([1, 2, 5, 3, 7, 8, 6, 4]) //7
 const endTimeTwo = performance.now();
 console.log(`This function took ${endTimeTwo - startTimeTwo} milliseconds`);
 
-//Second Attempt 
-//function minBribes(q) {
-//  let minBribes = 0;
+//Second Attempt -- not working
+function minBribes(q) {
+  let minBribes = 0;
 
+  for (let num = q.length -1; num > -1; num --) {
+    let currentPosition = parseInt(num) + 1;
+    if(q[num] > currentPosition) {
+      let swaps = q[num] - currentPosition;
+      if (swaps > 2) {
+        minBribes = "too much chaos"
+        console.log(minBribes);
+        return minBribes;
+      }
+    }
+    if (q[num] < currentPosition) {
+      let swaps = currentPosition - q[num];
+      console.log(num, q[num], currentPosition, swaps);
+      minBribes += swaps;
+    } 
+  }
 
-//}
+  console.log(minBribes);
+}
 
-//const startTime3 = performance.now();
-//minBribes([2, 1, 5, 3, 4]) //3
-//const endTime3 = performance.now();
+const startTime3 = performance.now();
+minBribes([2, 1, 5, 3, 4]) //3
+const endTime3 = performance.now();
 
-//console.log(`This function took ${endTime3 - startTime3} milliseconds`);
+console.log(`This function took ${endTime3 - startTime3} milliseconds`);
 
-//const startTime4 = performance.now();
-//minBribes([1, 2, 5, 3, 7, 8, 6, 4]) //7
-//const endTime4 = performance.now();
-//console.log(`This function took ${endTime4 - startTime4} milliseconds`);
+const startTime4 = performance.now();
+minBribes([1, 2, 5 , 3, 7, 8, 6, 4]) //7
+const endTime4 = performance.now();
+console.log(`This function took ${endTime4 - startTime4} milliseconds`);
