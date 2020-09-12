@@ -29,7 +29,9 @@ Output:
 Int representing the number of client notifications
 */
 
-//ATTEMPT ONE -- PASSED 3 TEST CASES, FAILED 5 DUE TO TIMEOUT
+// ==================================================================================
+// ATTEMPT ONE - 3 PASSED TESTS, FIVE FAILED TEST FOR TIME OUT
+// ==================================================================================
 const findMedian = (arr, evenOrOdd) => {
     arr.sort((a, b) => {
         return a - b;
@@ -62,7 +64,6 @@ const activityNotifications = (expenditure, d) => {
 
     //check if d is even or odd
     let evenOrOdd = d % 2 === 0 ? "even" : "odd";
-    console.log(evenOrOdd);
 
     //iterate through expenditure array starting at index d. For each iteration,
     //collect data from i - d : i - 1 and sort to find median. Compare that median
@@ -72,14 +73,7 @@ const activityNotifications = (expenditure, d) => {
         //worst case O(n) time -- num of elements in array
         let trailingDays = expenditure.slice(i - d, i); //worst case O(n) time -- num of elements in array
         let median = findMedian(trailingDays, evenOrOdd); // worst case O()
-        console.log(
-            "Trailing Days: ",
-            trailingDays,
-            "Median: ",
-            median,
-            "Compare to: ",
-            expenditure[i]
-        );
+
         if (expenditure[i] >= 2 * median) {
             clientNotifications++;
         }
@@ -88,21 +82,134 @@ const activityNotifications = (expenditure, d) => {
     return clientNotifications;
 };
 
+// ===================================================
+// TEST CASES => ATTEMPT ONE
+// ==================================================
 
-//TEST CASES
+////arr length less than or equal to d
+//console.log(activityNotifications([3, 2, 5], 3)); //0
 
+////empty array
+//console.log(activityNotifications([], 3)); //0
+
+////odd array length
+//console.log(activityNotifications([1, 2, 3, 4, 4], 4)); //0
+
+////even array length
+//console.log(activityNotifications([1, 2, 3, 10], 2)); //1
+
+////even array length
+//console.log(activityNotifications([1, 2, 3, 4, 10, 2], 4)); //1
+
+// ==================================================================================
+// ATTEMPT TWO REFACTOR
+// ==================================================================================
+const merge = (arr1 = [], arr2 = []) => {
+    const merged = [];
+    let arr1Index = 0;
+    let arr2Index = 0;
+    let counter = 0;
+
+    //merge elements on a and b in asc order
+    //Runtime O(a + b)
+    while(arr1Index < arr1.length || arr2Index < arr2.length) {
+        if(arr1Index >= arr1.length || arr1[arr1Index] > arr2[arr2Index]) {
+            merged.push(arr2[arr2Index]);
+            arr2Index += 1;
+        } else {
+            merged.push(arr1[arr1Index]);
+            arr1Index += 1;
+        }
+        counter++;
+    }
+    return merged;
+}
+
+const mergeSort = (arr = []) => {
+    const size = arr.length;
+
+    //base cases
+    if (size < 2) {
+        return arr;
+    }
+    if (size === 2) {
+        return (arr[0] > arr[1]) ? [arr[1], arr[0]] : arr;
+    }
+
+    //split and merge
+    const mid = parseInt(size / 2, 10);
+    return merge(mergeSort(arr.slice(0, mid)), mergeSort(arr.slice(mid, size)));
+}
+
+const findMedian2 = (arr, isOdd) => {
+    arr = mergeSort(arr);
+    console.log('Sorted Array: ', arr);
+
+    if (isOdd) {
+        let median = arr[(arr.length - 1) / 2];
+        console.log("Median : ", median);
+        return median;
+    }
+
+    if (arr.length === 2) {
+        let median = (arr[0] + arr[1]) / 2;
+        console.log('Median : ', median);
+        return median;
+    }
+
+    let half = arr.length / 2;
+    let median = (arr[Math.floor(half)] + arr[Math.ceil(half)]) / 2;
+    console.log("Median: ", median);
+
+    return median;
+};
+
+// Complete the activityNotifications function below.
+const activityNotifications2 = (expenditure, d) => {
+
+    let clientNotifications = 0;
+
+    // BASE CASE ==================
+    if (expenditure.length <= d) {
+        console.log("Client Notifications: ", clientNotifications);
+        return clientNotifications;
+    }
+
+    let isOdd = (d % 2 != 0);
+
+    //iterate through expenditure array starting at index d. For each iteration,
+    //collect data from i - d : i - 1 and sort to find median. Compare that median
+    //to expenditure[i] to determine if notification should be sent.
+
+    for (let i = d; i < expenditure.length; i++) {
+        //worst case O(n) time -- num of elements in array
+        let trailingDays = expenditure.slice(i - d, i); //worst case O(n) time - input being num of elements in array
+        let median = findMedian2(trailingDays, isOdd); // worst case O(t) - input being size of trailingDays arr
+
+        if (expenditure[i] >= 2 * median) {
+            clientNotifications++;
+        }
+    }
+    console.log('Client Notifications: ', clientNotifications);
+    return clientNotifications;
+};
+
+// ==================================================
+// TEST CASES => ATTEMPT TWO
+// ==================================================
 //arr length less than or equal to d
-console.log(activityNotifications([3, 2, 5], 3)); //0
+activityNotifications2([3, 2, 5], 3); //0
 
 //empty array
-console.log(activityNotifications([], 3)); //0
+activityNotifications2([], 3); //0
 
 //odd array length
-console.log(activityNotifications([1, 2, 3, 4, 4], 4)); //0
+activityNotifications2([1, 2, 3, 4, 4], 4); //0
 
 //even array length
-console.log(activityNotifications([1, 2, 3, 10], 2)); //1
+activityNotifications2([1, 2, 3, 10], 2); //2
 
 //even array length
-console.log(activityNotifications([1, 2, 3, 4, 10, 2], 4)); //1
+activityNotifications2([1, 2, 3, 4, 10, 2], 4); //1
+
 
