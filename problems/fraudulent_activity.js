@@ -1,8 +1,9 @@
+const { count } = require("console");
 /* 
 Problem -- https://www.hackerrank.com/challenges/fraudulent-activity-notifications/problem?h_l=interview&playlist_slugs%5B%5D%5B%5D=interview-preparation-kit&playlist_slugs%5B%5D%5B%5D=sorting&isFullScreen=true
 */
 
-const assert = require('assert');
+const { performance } = require("perf_hooks");
 
 /* 
 Questions:
@@ -36,6 +37,7 @@ const findMedian = (arr, evenOrOdd) => {
     arr.sort((a, b) => {
         return a - b;
     }); //time complexity depends on browser could be merge sort O(n log n) or Timsort O(n).
+
     if (evenOrOdd === "odd") {
         let median = arr[(arr.length - 1) / 2];
         return median;
@@ -48,6 +50,7 @@ const findMedian = (arr, evenOrOdd) => {
 
     let half = arr.length / 2;
     let median = (arr[Math.floor(half)] + arr[Math.ceil(half)]) / 2;
+    console.log(`Half is ${half}, and median is ${median}`);
 
     return median;
 };
@@ -73,12 +76,13 @@ const activityNotifications = (expenditure, d) => {
         //worst case O(n) time -- num of elements in array
         let trailingDays = expenditure.slice(i - d, i); //worst case O(n) time -- num of elements in array
         let median = findMedian(trailingDays, evenOrOdd); // worst case O()
-
+        console.log('median:', median);
         if (expenditure[i] >= 2 * median) {
             clientNotifications++;
+            console.log(`Attempt One: With median ${median}, client notifications increased to ${clientNotifications}`);
         }
     }
-
+    console.log('Attempt One: ', clientNotifications);
     return clientNotifications;
 };
 
@@ -86,111 +90,103 @@ const activityNotifications = (expenditure, d) => {
 // TEST CASES => ATTEMPT ONE
 // ==================================================
 
-////arr length less than or equal to d
-//console.log(activityNotifications([3, 2, 5], 3)); //0
+//arr length less than or equal to d
+console.log(activityNotifications([3, 2, 5], 3)); //0
 
-////empty array
-//console.log(activityNotifications([], 3)); //0
+//empty array
+console.log(activityNotifications([], 3)); //0
 
-////odd array length
-//console.log(activityNotifications([1, 2, 3, 4, 4], 4)); //0
+//odd array length
+console.log(activityNotifications([1, 2, 3, 4, 4], 4)); //0
 
-////even array length
-//console.log(activityNotifications([1, 2, 3, 10], 2)); //1
+//even array length
+console.log(activityNotifications([2, 3, 4, 2, 3, 6, 8, 4, 5], 5)); //2
 
-////even array length
-//console.log(activityNotifications([1, 2, 3, 4, 10, 2], 4)); //1
+//even array length
+
+console.log(activityNotifications([10, 20, 30, 40, 50], 3)); //1
 
 // ==================================================================================
 // ATTEMPT TWO REFACTOR
 // ==================================================================================
-const merge = (arr1 = [], arr2 = []) => {
-    const merged = [];
-    let arr1Index = 0;
-    let arr2Index = 0;
-    let counter = 0;
-
-    //merge elements on a and b in asc order
-    //Runtime O(a + b)
-    while(arr1Index < arr1.length || arr2Index < arr2.length) {
-        if(arr1Index >= arr1.length || arr1[arr1Index] > arr2[arr2Index]) {
-            merged.push(arr2[arr2Index]);
-            arr2Index += 1;
-        } else {
-            merged.push(arr1[arr1Index]);
-            arr1Index += 1;
-        }
-        counter++;
-    }
-    return merged;
-}
-
-const mergeSort = (arr = []) => {
-    const size = arr.length;
-
-    //base cases
-    if (size < 2) {
-        return arr;
-    }
-    if (size === 2) {
-        return (arr[0] > arr[1]) ? [arr[1], arr[0]] : arr;
-    }
-
-    //split and merge
-    const mid = parseInt(size / 2, 10);
-    return merge(mergeSort(arr.slice(0, mid)), mergeSort(arr.slice(mid, size)));
-}
-
-const findMedian2 = (arr, isOdd) => {
-    arr = mergeSort(arr);
-    console.log('Sorted Array: ', arr);
-
-    if (isOdd) {
-        let median = arr[(arr.length - 1) / 2];
-        console.log("Median : ", median);
-        return median;
-    }
-
-    if (arr.length === 2) {
-        let median = (arr[0] + arr[1]) / 2;
-        console.log('Median : ', median);
-        return median;
-    }
-
-    let half = arr.length / 2;
-    let median = (arr[Math.floor(half)] + arr[Math.ceil(half)]) / 2;
-    console.log("Median: ", median);
-
-    return median;
-};
 
 // Complete the activityNotifications function below.
 const activityNotifications2 = (expenditure, d) => {
-
     let clientNotifications = 0;
 
     // BASE CASE ==================
     if (expenditure.length <= d) {
-        console.log("Client Notifications: ", clientNotifications);
         return clientNotifications;
     }
 
-    let isOdd = (d % 2 != 0);
+    let median;
+    //For while loop:
+    let firstIndex = 0;
+    let lastIndex = d;
+    let isOdd = d % 2 != 0;
+    let half = d / 2;
+    //If even:
+    let lowerIndex = Math.floor(half);
+    let higherIndex = Math.ceil(half);
+    console.log(`Half is ${half}. Lower Index and Higher Index are ${lowerIndex}, ${higherIndex}`);
+    
+    while (lastIndex < expenditure.length) {
+        //fill the counting array to the set constraint between 0 - 200
+        let countSort = new Array(201).fill(0);
 
-    //iterate through expenditure array starting at index d. For each iteration,
-    //collect data from i - d : i - 1 and sort to find median. Compare that median
-    //to expenditure[i] to determine if notification should be sent.
-
-    for (let i = d; i < expenditure.length; i++) {
-        //worst case O(n) time -- num of elements in array
-        let trailingDays = expenditure.slice(i - d, i); //worst case O(n) time - input being num of elements in array
-        let median = findMedian2(trailingDays, isOdd); // worst case O(t) - input being size of trailingDays arr
-
-        if (expenditure[i] >= 2 * median) {
-            clientNotifications++;
+        //use countsort for the trailing days
+        for (let i = firstIndex; i < lastIndex; i++) {
+            countSort[expenditure[i]]++;
         }
+        console.log(countSort);
+
+        let sum = 0;
+        let j = 0;
+
+        if (isOdd) {
+            let stopper = half;
+            while (sum < stopper) {
+                countSort[j] += sum;
+                sum = countSort[j];
+                j++;
+            }
+
+            median = j - 1;
+            console.log(median);
+
+        } else {
+            let stopper = higherIndex;
+            let firstValue;
+            let lastValue;
+
+            while (sum < stopper) {
+                countSort[j] += sum;
+                sum = countSort[j];
+
+                if (sum === lowerIndex) {
+                    firstValue = j;
+                }
+
+                if (sum === higherIndex) {
+                    lastValue = j;
+                }
+
+                j++;
+            }
+
+            median = (firstValue + lastValue) / 2;
+            console.log(`Median is ${median}`);
+        }
+
+        if (expenditure[lastIndex] >= 2 * median) {
+            clientNotifications++;
+            console.log(`With median ${median}, client notifications increased to ${clientNotifications}`);
+        }
+
+        firstIndex++;
+        lastIndex++;
     }
-    console.log('Client Notifications: ', clientNotifications);
+    console.log(`Final client notification count: ${clientNotifications}`);
     return clientNotifications;
 };
 
@@ -198,18 +194,18 @@ const activityNotifications2 = (expenditure, d) => {
 // TEST CASES => ATTEMPT TWO
 // ==================================================
 //arr length less than or equal to d
-activityNotifications2([3, 2, 5], 3); //0
+console.log(activityNotifications2([3, 2, 5], 3)); //0
 
 //empty array
-activityNotifications2([], 3); //0
+console.log(activityNotifications2([], 3)); //0
 
 //odd array length
-activityNotifications2([1, 2, 3, 4, 4], 4); //0
+console.log(activityNotifications2([1, 2, 3, 4, 4], 4)); //0
 
 //even array length
-activityNotifications2([1, 2, 3, 10], 2); //2
+console.log(activityNotifications2([2, 3, 4, 2, 3, 6, 8, 4, 5], 5)); //2
 
 //even array length
-activityNotifications2([1, 2, 3, 4, 10, 2], 4); //1
+console.log(activityNotifications2([10, 20, 30, 40, 50], 3)); //1
 
 
